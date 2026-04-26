@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Trending Explorer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg-primary: #0a0e17;
+  --bg-secondary: #111827;
+  --bg-card: #1a2236;
+  --bg-hover: #1f2b42;
+  --bg-active: #253352;
+  --border: #2a3550;
+  --border-light: #3b4a6b;
+  --text-primary: #e8ecf4;
+  --text-secondary: #8b97b0;
+  --text-muted: #5a6680;
+  --accent: #3b82f6;
+  --accent-hover: #2563eb;
+  --accent-glow: rgba(59, 130, 246, 0.15);
+  --green: #22c55e;
+  --orange: #f59e0b;
+  --red: #ef4444;
+  --purple: #a855f7;
+  --cyan: #06b6d4;
+  --font-body: 'Outfit', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --radius: 8px;
+  --radius-lg: 12px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.35);
+}
+
+html { font-size: 14px; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  line-height: 1.5;
+}
+
+/* ─── Header ────────────────────────────────────────────────── */
+.header {
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(12px);
+}
+.header-left { display: flex; align-items: center; gap: 14px; }
+.logo {
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, var(--accent), var(--cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.logo-sub { font-size: 0.78rem; color: var(--text-muted); font-weight: 400; }
+.header-right { display: flex; align-items: center; gap: 12px; }
+.rate-limit-badge {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+.auto-refresh-toggle {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 0.8rem; color: var(--text-secondary); cursor: pointer; user-select: none;
+}
+.auto-refresh-toggle input { accent-color: var(--accent); cursor: pointer; }
+
+/* ─── Toolbar ───────────────────────────────────────────────── */
+.toolbar {
+  padding: 16px 28px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-secondary);
+}
+.category-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  flex: 1;
+}
+.pill {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.pill:hover { border-color: var(--accent); color: var(--text-primary); background: var(--bg-hover); }
+.pill.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+
+.search-group {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.search-box {
+  padding: 7px 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  width: 220px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.search-box::placeholder { color: var(--text-muted); }
+.search-box:focus { border-color: var(--accent); }
+
+.select-box {
+  padding: 7px 10px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  outline: none;
+  cursor: pointer;
+}
+.select-box:focus { border-color: var(--accent); }
+
+.btn {
+  padding: 7px 16px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.btn:hover { background: var(--bg-hover); border-color: var(--border-light); }
+.btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn-primary:hover { background: var(--accent-hover); }
+
+/* ─── Status Bar ────────────────────────────────────────────── */
+.status-bar {
+  padding: 8px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-primary);
+}
+.status-bar .count { color: var(--text-secondary); font-weight: 600; }
+
+/* ─── Table ─────────────────────────────────────────────────── */
+.table-wrap {
+  overflow-x: auto;
+  padding: 0 28px 28px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0;
+}
+thead th {
+  position: sticky;
+  top: 0;
+  background: var(--bg-secondary);
+  border-bottom: 2px solid var(--border);
+  padding: 12px 14px;
+  text-align: left;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.2s;
+}
+thead th:hover { color: var(--text-secondary); }
+thead th.sorted { color: var(--accent); }
+thead th .sort-arrow { margin-left: 4px; font-size: 0.65rem; }
+
+tbody tr {
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+tbody tr:hover { background: var(--bg-hover); }
+tbody td {
+  padding: 12px 14px;
+  vertical-align: middle;
+  font-size: 0.85rem;
+}
+
+.repo-cell { display: flex; align-items: center; gap: 10px; min-width: 260px; }
+.repo-avatar {
+  width: 32px; height: 32px;
+  border-radius: 6px;
+  flex-shrink: 0;
+  background: var(--bg-card);
+}
+.repo-name {
+  font-weight: 600;
+  color: var(--accent);
+  font-size: 0.88rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+.repo-owner { font-size: 0.72rem; color: var(--text-muted); }
+.repo-desc {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  max-width: 360px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lang-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.76rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.lang-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.stat {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+.stat-stars { color: var(--orange); }
+.stat-forks { color: var(--text-secondary); }
+.stat-issues { color: var(--cyan); }
+
+.topic-tag {
+  display: inline-block;
+  padding: 2px 7px;
+  border-radius: 10px;
+  font-size: 0.65rem;
+  background: var(--accent-glow);
+  color: var(--accent);
+  border: 1px solid rgba(59,130,246,0.2);
+  margin: 1px 2px;
+  white-space: nowrap;
+}
+.topics-cell { max-width: 200px; overflow: hidden; }
+
+.time-ago { font-size: 0.76rem; color: var(--text-muted); font-family: var(--font-mono); white-space: nowrap; }
+
+/* ─── Pagination ────────────────────────────────────────────── */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  padding: 20px 28px;
+}
+.page-btn {
+  padding: 6px 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.page-btn:hover { border-color: var(--accent); color: var(--text-primary); }
+.page-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+.page-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+/* ─── Loading & Empty ───────────────────────────────────────── */
+.loading-overlay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 0;
+  color: var(--text-muted);
+  gap: 14px;
+}
+.spinner {
+  width: 32px; height: 32px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.empty-state {
+  text-align: center;
+  padding: 80px 20px;
+  color: var(--text-muted);
+}
+.empty-state .icon { font-size: 2.5rem; margin-bottom: 12px; }
+
+.error-msg {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--red);
+}
+
+/* ─── Detail Modal ──────────────────────────────────────────── */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.65);
+  backdrop-filter: blur(4px);
+  z-index: 200;
+  display: none;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 40px 20px;
+  overflow-y: auto;
+}
+.modal-backdrop.open { display: flex; }
+.modal {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 800px;
+  box-shadow: var(--shadow);
+  animation: modalIn 0.25s ease;
+}
+@keyframes modalIn { from { opacity: 0; transform: translateY(16px); } }
+.modal-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.modal-title { font-size: 1.2rem; font-weight: 700; }
+.modal-close {
+  width: 32px; height: 32px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.modal-close:hover { background: var(--bg-hover); color: var(--text-primary); }
+.modal-body { padding: 24px; }
+.modal-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.modal-stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+  text-align: center;
+}
+.modal-stat-val { font-family: var(--font-mono); font-size: 1.2rem; font-weight: 700; }
+.modal-stat-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+
+.modal-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+.modal-meta-item {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  background: var(--bg-card);
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+}
+
+.readme-content {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  max-height: 400px;
+  overflow-y: auto;
+  font-size: 0.82rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-family: var(--font-mono);
+}
+.readme-content::-webkit-scrollbar { width: 6px; }
+.readme-content::-webkit-scrollbar-track { background: transparent; }
+.readme-content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* ─── Responsive ────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .header { padding: 12px 16px; flex-wrap: wrap; gap: 8px; }
+  .toolbar { padding: 12px 16px; }
+  .table-wrap { padding: 0 8px 16px; }
+  .search-box { width: 160px; }
+  .status-bar { padding: 8px 16px; }
+  .pagination { padding: 16px; }
+  .modal-body { padding: 16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-left">
+    <div>
+      <div class="logo">GitHub Trending Explorer</div>
+      <div class="logo-sub">发现增长最快的开源项目</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <span id="rateLimitBadge" class="rate-limit-badge">API: --/--</span>
+    <label class="auto-refresh-toggle">
+      <input type="checkbox" id="autoRefreshToggle"> 自动刷新
+    </label>
+    <span id="refreshCountdown" class="rate-limit-badge" style="display:none;">--s</span>
+  </div>
+</header>
+
+<!-- Toolbar -->
+<div class="toolbar">
+  <div class="category-pills" id="categoryPills"></div>
+  <div class="search-group">
+    <input type="text" class="search-box" id="searchInput" placeholder="搜索项目名或关键字...">
+    <select class="select-box" id="daysSelect" title="时间范围">
+      <option value="1">最近 1 天</option>
+      <option value="3">最近 3 天</option>
+      <option value="7" selected>最近 7 天</option>
+      <option value="14">最近 14 天</option>
+      <option value="30">最近 30 天</option>
+      <option value="90">最近 90 天</option>
+    </select>
+    <select class="select-box" id="perPageSelect" title="每页数量">
+      <option value="20">20条</option>
+      <option value="30" selected>30条</option>
+      <option value="50">50条</option>
+    </select>
+    <button class="btn btn-primary" onclick="fetchRepos(1)" title="刷新">🔄 刷新</button>
+  </div>
+</div>
+
+<!-- Status Bar -->
+<div class="status-bar">
+  <div id="statusText">加载中...</div>
+  <div id="lastUpdate"></div>
+</div>
+
+<!-- Table -->
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th data-sort="name">项目 <span class="sort-arrow"></span></th>
+        <th data-sort="description">描述 <span class="sort-arrow"></span></th>
+        <th data-sort="language">语言 <span class="sort-arrow"></span></th>
+        <th data-sort="stargazers_count">⭐ Stars <span class="sort-arrow"></span></th>
+        <th data-sort="forks_count">🍴 Forks <span class="sort-arrow"></span></th>
+        <th data-sort="open_issues_count">📋 Issues <span class="sort-arrow"></span></th>
+        <th>Topics</th>
+        <th data-sort="pushed_at">最近推送 <span class="sort-arrow"></span></th>
+      </tr>
+    </thead>
+    <tbody id="repoTableBody">
+      <tr><td colspan="8"><div class="loading-overlay"><div class="spinner"></div><span>加载中...</span></div></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Pagination -->
+<div class="pagination" id="pagination"></div>
+
+<!-- Detail Modal -->
+<div class="modal-backdrop" id="detailModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="modalTitle">--</div>
+        <div style="font-size:0.8rem;color:var(--text-muted);margin-top:4px;" id="modalOwner">--</div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="modalDesc" style="margin-bottom:16px;color:var(--text-secondary);font-size:0.9rem;"></div>
+      <div class="modal-stats" id="modalStats"></div>
+      <div class="modal-meta" id="modalMeta"></div>
+      <div style="display:flex;gap:8px;margin-bottom:16px;">
+        <a id="modalGHLink" href="#" target="_blank" class="btn btn-primary" style="text-decoration:none;">🔗 GitHub</a>
+        <a id="modalHomepage" href="#" target="_blank" class="btn" style="text-decoration:none;display:none;">🌐 Homepage</a>
+      </div>
+      <div id="readmeSection" style="display:none;">
+        <h4 style="font-size:0.85rem;font-weight:600;margin-bottom:8px;color:var(--text-muted);">📄 README</h4>
+        <div class="readme-content" id="readmeContent"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── State ─────────────────────────────────────────────────────
+let currentCategory = 'trending';
+let currentPage = 1;
+let currentData = [];
+let totalCount = 0;
+let autoRefreshTimer = null;
+let autoRefreshInterval = 120; // seconds
+let sortCol = '';
+let sortDir = 'desc';
+let searchDebounce = null;
+
+// ── Language Colors ───────────────────────────────────────────
+const langColors = {
+  JavaScript: '#f1e05a', TypeScript: '#3178c6', Python: '#3572A5',
+  Rust: '#dea584', Java: '#b07219', 'C++': '#f34b7d', C: '#555555',
+  Go: '#00ADD8', Ruby: '#701516', PHP: '#4F5D95', Swift: '#F05138',
+  Kotlin: '#A97BFF', Dart: '#00B4AB', Scala: '#c22d40', Shell: '#89e051',
+  Vue: '#41b883', HTML: '#e34c26', CSS: '#563d7c', Lua: '#000080',
+  Zig: '#ec915c', Elixir: '#6e4a7e', Haskell: '#5e5086', Jupyter: '#F37626',
+};
+
+// ── Helpers ───────────────────────────────────────────────────
+function formatNum(n) {
+  if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+  if (n >= 1000) return (n / 1000).toFixed(1) + 'k';
+  return String(n);
+}
+
+function timeAgo(dateStr) {
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 60) return `${mins}分钟前`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs}小时前`;
+  const days = Math.floor(hrs / 24);
+  if (days < 30) return `${days}天前`;
+  return `${Math.floor(days / 30)}月前`;
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Init ──────────────────────────────────────────────────────
+async function init() {
+  try {
+    const res = await fetch('/api/categories');
+    const categories = await res.json();
+    renderPills(categories);
+  } catch {
+    renderPills([
+      {key:'trending',label:'🔥 Trending'},{key:'fast-growing',label:'📈 Fast Growing'},
+      {key:'ai',label:'🤖 AI / ML'},{key:'rust',label:'🦀 Rust'},{key:'python',label:'🐍 Python'},
+      {key:'java',label:'☕ Java'},{key:'vue',label:'💚 Vue'},{key:'react',label:'⚛️ React'},
+      {key:'nestjs',label:'🐱 NestJS'},{key:'cpp',label:'⚡ C++'},{key:'cicd',label:'🚀 CI/CD'},
+    ]);
+  }
+  fetchRepos(1);
+  setupSorting();
+  setupSearch();
+  setupAutoRefresh();
+}
+
+function renderPills(categories) {
+  const el = document.getElementById('categoryPills');
+  el.innerHTML = categories.map(c =>
+    `<button class="pill ${c.key === currentCategory ? 'active' : ''}" data-cat="${c.key}">${c.label}</button>`
+  ).join('');
+  el.addEventListener('click', e => {
+    const btn = e.target.closest('.pill');
+    if (!btn) return;
+    currentCategory = btn.dataset.cat;
+    el.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    fetchRepos(1);
+  });
+}
+
+// ── Fetch Repos ───────────────────────────────────────────────
+async function fetchRepos(page = 1) {
+  currentPage = page;
+  const tbody = document.getElementById('repoTableBody');
+  tbody.innerHTML = `<tr><td colspan="8"><div class="loading-overlay"><div class="spinner"></div><span>正在获取数据...</span></div></td></tr>`;
+
+  const days = document.getElementById('daysSelect').value;
+  const perPage = document.getElementById('perPageSelect').value;
+  const search = document.getElementById('searchInput').value.trim();
+
+  const params = new URLSearchParams({
+    category: currentCategory,
+    page,
+    per_page: perPage,
+    days,
+    search,
+  });
+
+  try {
+    const res = await fetch(`/api/repos?${params}`);
+    const data = await res.json();
+
+    if (data.error) {
+      tbody.innerHTML = `<tr><td colspan="8"><div class="error-msg">❌ ${escapeHtml(data.error)}</div></td></tr>`;
+      return;
+    }
+
+    currentData = data.items || [];
+    totalCount = data.total_count || 0;
+    sortCol = '';
+    sortDir = 'desc';
+
+    if (data.rateLimit) {
+      document.getElementById('rateLimitBadge').textContent = `API: ${data.rateLimit.remaining}/${data.rateLimit.limit}`;
+    }
+
+    renderTable(currentData);
+    renderPagination();
+    document.getElementById('statusText').innerHTML = `共 <span class="count">${totalCount.toLocaleString()}</span> 个项目`;
+    document.getElementById('lastUpdate').textContent = `更新于 ${new Date().toLocaleTimeString()}`;
+  } catch (err) {
+    tbody.innerHTML = `<tr><td colspan="8"><div class="error-msg">❌ 网络错误: ${escapeHtml(err.message)}</div></td></tr>`;
+  }
+}
+
+// ── Render Table ──────────────────────────────────────────────
+function renderTable(items) {
+  const tbody = document.getElementById('repoTableBody');
+  if (!items.length) {
+    tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><div class="icon">📭</div>没有找到匹配的项目</div></td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = items.map(r => `
+    <tr onclick="openDetail('${r.owner.login}','${r.name}')">
+      <td>
+        <div class="repo-cell">
+          <img class="repo-avatar" src="${r.owner.avatar_url}&s=64" alt="" loading="lazy">
+          <div>
+            <div class="repo-name" title="${escapeHtml(r.full_name)}">${escapeHtml(r.name)}</div>
+            <div class="repo-owner">${escapeHtml(r.owner.login)}</div>
+          </div>
+        </div>
+      </td>
+      <td><div class="repo-desc" title="${escapeHtml(r.description)}">${escapeHtml(r.description) || '<span style="color:var(--text-muted)">—</span>'}</div></td>
+      <td>
+        ${r.language ? `<span class="lang-badge"><span class="lang-dot" style="background:${langColors[r.language] || '#888'}"></span>${r.language}</span>` : '—'}
+      </td>
+      <td><span class="stat stat-stars">★ ${formatNum(r.stargazers_count)}</span></td>
+      <td><span class="stat stat-forks">🍴 ${formatNum(r.forks_count)}</span></td>
+      <td><span class="stat stat-issues">${formatNum(r.open_issues_count)}</span></td>
+      <td><div class="topics-cell">${(r.topics || []).slice(0, 4).map(t => `<span class="topic-tag">${t}</span>`).join('')}</div></td>
+      <td><span class="time-ago">${timeAgo(r.pushed_at)}</span></td>
+    </tr>
+  `).join('');
+}
+
+// ── Pagination ────────────────────────────────────────────────
+function renderPagination() {
+  const perPage = Number(document.getElementById('perPageSelect').value);
+  const totalPages = Math.min(Math.ceil(totalCount / perPage), 34); // GitHub limits to 1000 results
+  const el = document.getElementById('pagination');
+  if (totalPages <= 1) { el.innerHTML = ''; return; }
+
+  let html = `<button class="page-btn" onclick="fetchRepos(${currentPage - 1})" ${currentPage <= 1 ? 'disabled' : ''}>‹ 上一页</button>`;
+
+  const range = [];
+  for (let i = 1; i <= totalPages; i++) {
+    if (i === 1 || i === totalPages || (i >= currentPage - 2 && i <= currentPage + 2)) {
+      range.push(i);
+    } else if (range[range.length - 1] !== '...') {
+      range.push('...');
+    }
+  }
+  range.forEach(p => {
+    if (p === '...') html += `<span style="color:var(--text-muted);padding:0 4px;">…</span>`;
+    else html += `<button class="page-btn ${p === currentPage ? 'active' : ''}" onclick="fetchRepos(${p})">${p}</button>`;
+  });
+
+  html += `<button class="page-btn" onclick="fetchRepos(${currentPage + 1})" ${currentPage >= totalPages ? 'disabled' : ''}>下一页 ›</button>`;
+  el.innerHTML = html;
+}
+
+// ── Client-Side Sorting ───────────────────────────────────────
+function setupSorting() {
+  document.querySelectorAll('thead th[data-sort]').forEach(th => {
+    th.addEventListener('click', () => {
+      const col = th.dataset.sort;
+      if (sortCol === col) sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+      else { sortCol = col; sortDir = col === 'name' ? 'asc' : 'desc'; }
+
+      document.querySelectorAll('thead th').forEach(h => {
+        h.classList.remove('sorted');
+        h.querySelector('.sort-arrow') && (h.querySelector('.sort-arrow').textContent = '');
+      });
+      th.classList.add('sorted');
+      th.querySelector('.sort-arrow').textContent = sortDir === 'asc' ? '▲' : '▼';
+
+      const sorted = [...currentData].sort((a, b) => {
+        let va = a[col], vb = b[col];
+        if (typeof va === 'string') {
+          va = (va || '').toLowerCase();
+          vb = (vb || '').toLowerCase();
+          return sortDir === 'asc' ? va.localeCompare(vb) : vb.localeCompare(va);
+        }
+        va = va || 0; vb = vb || 0;
+        return sortDir === 'asc' ? va - vb : vb - va;
+      });
+      renderTable(sorted);
+    });
+  });
+}
+
+// ── Search Debounce ───────────────────────────────────────────
+function setupSearch() {
+  const input = document.getElementById('searchInput');
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') { clearTimeout(searchDebounce); fetchRepos(1); } });
+  input.addEventListener('input', () => {
+    clearTimeout(searchDebounce);
+    searchDebounce = setTimeout(() => fetchRepos(1), 600);
+  });
+  document.getElementById('daysSelect').addEventListener('change', () => fetchRepos(1));
+  document.getElementById('perPageSelect').addEventListener('change', () => fetchRepos(1));
+}
+
+// ── Auto Refresh ──────────────────────────────────────────────
+function setupAutoRefresh() {
+  const toggle = document.getElementById('autoRefreshToggle');
+  const countdown = document.getElementById('refreshCountdown');
+
+  toggle.addEventListener('change', () => {
+    if (toggle.checked) {
+      countdown.style.display = '';
+      let sec = autoRefreshInterval;
+      countdown.textContent = `${sec}s`;
+      autoRefreshTimer = setInterval(() => {
+        sec--;
+        countdown.textContent = `${sec}s`;
+        if (sec <= 0) {
+          sec = autoRefreshInterval;
+          fetchRepos(currentPage);
+        }
+      }, 1000);
+    } else {
+      clearInterval(autoRefreshTimer);
+      countdown.style.display = 'none';
+    }
+  });
+}
+
+// ── Detail Modal ──────────────────────────────────────────────
+async function openDetail(owner, repo) {
+  const modal = document.getElementById('detailModal');
+  modal.classList.add('open');
+  document.getElementById('modalTitle').textContent = repo;
+  document.getElementById('modalOwner').textContent = owner;
+  document.getElementById('modalDesc').textContent = '加载中...';
+  document.getElementById('modalStats').innerHTML = '';
+  document.getElementById('modalMeta').innerHTML = '';
+  document.getElementById('readmeSection').style.display = 'none';
+
+  try {
+    const res = await fetch(`/api/repo/${owner}/${repo}`);
+    const data = await res.json();
+
+    if (data.repo) {
+      const r = data.repo;
+      document.getElementById('modalDesc').textContent = r.description || '暂无描述';
+      document.getElementById('modalGHLink').href = r.html_url;
+
+      if (r.homepage) {
+        const hp = document.getElementById('modalHomepage');
+        hp.href = r.homepage;
+        hp.style.display = '';
+      } else {
+        document.getElementById('modalHomepage').style.display = 'none';
+      }
+
+      document.getElementById('modalStats').innerHTML = [
+        { val: formatNum(r.stargazers_count), label: 'Stars', color: 'var(--orange)' },
+        { val: formatNum(r.forks_count), label: 'Forks', color: 'var(--text-secondary)' },
+        { val: formatNum(r.watchers_count), label: 'Watchers', color: 'var(--cyan)' },
+        { val: formatNum(r.open_issues_count), label: 'Issues', color: 'var(--green)' },
+        { val: r.language || '—', label: 'Language', color: 'var(--purple)' },
+        { val: r.license?.spdx_id || '—', label: 'License', color: 'var(--text-secondary)' },
+      ].map(s => `<div class="modal-stat-card"><div class="modal-stat-val" style="color:${s.color}">${s.val}</div><div class="modal-stat-label">${s.label}</div></div>`).join('');
+
+      const metaItems = [];
+      if (r.created_at) metaItems.push(`创建: ${new Date(r.created_at).toLocaleDateString()}`);
+      if (r.pushed_at) metaItems.push(`最近推送: ${timeAgo(r.pushed_at)}`);
+      if (r.size) metaItems.push(`大小: ${(r.size / 1024).toFixed(1)} MB`);
+      if (r.default_branch) metaItems.push(`分支: ${r.default_branch}`);
+      if (r.topics?.length) metaItems.push(...r.topics.map(t => `#${t}`));
+      document.getElementById('modalMeta').innerHTML = metaItems.map(m => `<span class="modal-meta-item">${escapeHtml(m)}</span>`).join('');
+    }
+
+    if (data.readme) {
+      document.getElementById('readmeSection').style.display = '';
+      document.getElementById('readmeContent').textContent = data.readme;
+    }
+  } catch (err) {
+    document.getElementById('modalDesc').textContent = `加载失败: ${err.message}`;
+  }
+}
+
+function closeModal() {
+  document.getElementById('detailModal').classList.remove('open');
+}
+
+document.getElementById('detailModal').addEventListener('click', e => {
+  if (e.target === document.getElementById('detailModal')) closeModal();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// ── Go ────────────────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>
