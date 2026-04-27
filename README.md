@@ -1,47 +1,36 @@
-# GitHub Trending Explorer 🔥
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-发现增长最快的开源项目 — AI、Rust、Python、Java、Vue、React、NestJS、C++、CI/CD 等。
+## Getting Started
 
-## 快速开始
+First, run the development server:
 
 ```bash
-# 1. 安装依赖
-npm install
-
-# 2. 配置 GitHub Token（可选但推荐）
-cp .env.example .env
-# 编辑 .env，填入你的 GitHub Personal Access Token
-
-# 3. 启动
-npm start
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
-然后打开浏览器访问 **http://localhost:3000**
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## 功能
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-- **分类浏览** — 按 Trending / Fast Growing / AI / Rust / Python / Java / Vue / React / NestJS / C++ / CI/CD 分类
-- **关键字搜索** — 在项目名和描述中搜索
-- **时间范围** — 筛选最近 1 天到 90 天的活跃项目
-- **排序** — 点击表头按 Stars / Forks / Issues / 语言 等排序
-- **自动刷新** — 开启后每 2 分钟自动更新数据
-- **项目详情** — 点击任意项目查看 Stars、Forks、License、README 等详细信息
-- **API 限流显示** — 实时显示 GitHub API 剩余额度
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## GitHub Token
+## Learn More
 
-不配置 Token 时限制为 10 次请求/分钟，配置后提升到 30 次/分钟。
+To learn more about Next.js, take a look at the following resources:
 
-创建 Token：https://github.com/settings/tokens  
-不需要勾选任何 scope（只需公开读取权限）。
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-## 技术栈
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-- **后端**: Node.js + Express
-- **前端**: 纯 HTML / CSS / JS（无框架依赖）
-- **API**: GitHub REST API v3
-- **缓存**: 内存缓存（5 分钟 TTL）
+## Deploy on Vercel
 
-## 部署
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-项目可直接部署到任何支持 Node.js 的平台（Vercel、Railway、Render、Docker 等）。
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
