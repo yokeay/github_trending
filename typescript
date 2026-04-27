@@ -1,0 +1,37 @@
+Script started on 2026-04-27 04:26:16+00:00 [COMMAND="npm run build 2>&1" <not executed on terminal>]
+
+> github-trending-explorer@0.1.0 build
+> next build
+
+[1G[0K[1m[38;2;173;127;168m▲ Next.js 16.2.4[39m[22m (Turbopack)
+- Environments: .env.production, .env
+- Experiments (use with caution):
+  · optimizePackageImports
+
+[37m[1m [22m[39m Creating an optimized production build ...
+[32m[1m✓[22m[39m Compiled successfully in 4.2s
+[?25l[37m[1m [22m[39m Running TypeScript  [36m.[39m[2K[1G[37m[1m [22m[39m Running TypeScript  [36m..[39m[2K[1G[37m[1m [22m[39m Running TypeScript  [36m...[39m[2K[1G[37m[1m [22m[39m Running TypeScript  [36m.[39m[2K[1G[37m[1m [22m[39m Running TypeScript  [36m..[39m[2K[1G[37m[1m [22m[39m Running TypeScript  [36m...[39m[2K[1G[37m[1m [22m[39m Running TypeScript  [36m.[39m[2K[1G[37m[1m [22m[39m Running TypeScript  [36m..[39m[2K[1G[37m[1m [22m[39m Running TypeScript  [36m...[39m[2K[1G[37m[1m [22m[39m Running TypeScript  [36m.[39m[2K[1G[37m[1m [22m[39m Running TypeScript  [36m..[39m[2K[1G[37m[1m [22m[39m Running TypeScript  [36m...[39m[2K[1G[37m[1m [22m[39m Running TypeScript  [36m.[39m[2K[1G[37m[1m [22m[39m Running TypeScript  [36m..[39m[2K[1G[37m[1m [22m[39m Running TypeScript  [36m...[39m[2K[1G[37m[1m [22m[39m Running TypeScript  [36m.[39m[2K[1G[37m[1m [22m[39m Running TypeScript  [36m..[39m[2K[1G[37m[1m [22m[39m Running TypeScript  [36m...[39m[2K[1G[37m[1m [22m[39m Running TypeScript  [36m.[39m[2K[1G[37m[1m [22m[39m Running TypeScript  [36m..[39m[2K[1G[37m[1m [22m[39m Running TypeScript  [36m...[39m[2K[1G[37m[1m [22m[39m Running TypeScript  [36m.[39m[2K[1G[?25h[?25l[37m[1m [22m[39m Finished TypeScript in 4.3s  [36m.[39m[2K[1G[?25h[37m[1m [22m[39m Finished TypeScript in 4.3s    [32m[1m✓[22m[39m Finished TypeScript in 4.3s 
+[?25l[37m[1m [22m[39m Collecting page data using 3 workers  [36m.[39m[2K[1G[37m[1m [22m[39m Collecting page data using 3 workers  [36m..[39m[2K[1G[37m[1m [22m[39m Collecting page data using 3 workers  [36m...[39m[2K[1G[?25h[37m[1m [22m[39m Collecting page data using 3 workers in 470ms    [32m[1m✓[22m[39m Collecting page data using 3 workers in 470ms 
+[?25l[37m[1m [22m[39m Generating static pages using 3 workers (0/4)  [36m[    ][39m[2K[1G[37m[1m [22m[39m Generating static pages using 3 workers (0/4)  [36m[=   ][39m[2K[1G[?25h[32m[1m✓[22m[39m Generating static pages using 3 workers (4/4) in 209ms
+[?25l[37m[1m [22m[39m Finalizing page optimization  [36m.[39m[2K[1G[?25h[37m[1m [22m[39m Finalizing page optimization in 12ms    [32m[1m✓[22m[39m Finalizing page optimization in 12ms 
+
+[4mRoute (app)[24m
+┌ ○ /_not-found
+├ ● /[locale]
+│ ├ /zh
+│ └ /en
+├ ƒ /[locale]/api/bookmarks
+├ ƒ /[locale]/api/categories
+├ ƒ /[locale]/api/repo/[owner]/[repo]
+├ ƒ /[locale]/api/repos
+└ ƒ /[locale]/api/user-pref
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+●  (SSG)      prerendered as static HTML (uses [36mgenerateStaticParams[39m)
+ƒ  (Dynamic)  server-rendered on demand
+
+[?25h[1G[0K⠙[1G[0K
+Script done on 2026-04-27 04:26:27+00:00 [COMMAND_EXIT_CODE="0"]

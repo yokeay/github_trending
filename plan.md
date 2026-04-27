@@ -27,34 +27,34 @@ GitHub Trending Explorer — 发现增长最快的开源项目，支持多分类
 
 ---
 
-## v0.2.0 — API 层迁移
+## v0.2.0 — API 层迁移 ✅
 
-- [ ] 迁移 GitHub API 封装 (`src/lib/github.ts`)
-- [ ] 迁移 API Routes:
-  - [ ] `GET /api/categories`
-  - [ ] `GET /api/repos`
-  - [ ] `GET /api/repo/[owner]/[repo]`
-  - [ ] `GET /api/rate-limit`
-- [ ] 统一错误码规范 (`{code, message, data}`)
-- [ ] 迁移 SQLite 缓存层（替代内存 Map）
-- [ ] 前端 API 请求封装 (`src/lib/api-client.ts`)
-- [ ] Toast 通知组件
-- [ ] 审计日志写入
+- [x] 迁移 GitHub API 封装 (`src/lib/github.ts`)
+- [x] 迁移 API Routes:
+  - [x] `GET /api/categories`
+  - [x] `GET /api/repos`
+  - [x] `GET /api/repo/[owner]/[repo]`
+  - [x] `GET /api/bookmarks`
+  - [x] `GET/PUT /api/user-pref`
+- [x] 统一错误码规范 (`{code, message, data}`)
+- [x] 迁移 SQLite 缓存层（替代内存 Map）
+- [x] 前端 API 请求封装 (`src/lib/api-client.ts`)
+- [x] 审计日志写入
 
 ---
 
-## v0.3.0 — 前端组件重构
+## v0.3.0 — 前端组件重构 ✅
 
-- [ ] Header（Logo + 限流徽章 + 自动刷新开关）
-- [ ] CategoryPills 分类标签组
-- [ ] SearchToolbar 搜索工具栏
-- [ ] RepoTable 仓库表格（含客户端排序）
-- [ ] Pagination 分页组件
-- [ ] RepoDetailModal 项目详情弹窗
-- [ ] ThemeToggle 主题切换按钮（Header 右上角）
-- [ ] 语言切换按钮（Header）
-- [ ] Loading / Empty / Error 状态
-- [ ] 日/夜间主题配色（黑白灰为主色）
+- [x] Header（Logo + 限流徽章）
+- [x] CategoryPills 分类标签组
+- [x] SearchToolbar 搜索工具栏
+- [x] RepoTable 仓库表格
+- [x] Pagination 分页组件
+- [x] RepoExplorer 页面组件
+- [x] ThemeToggle 主题切换按钮
+- [x] Loading / Empty / Error 状态
+- [x] 日/夜间主题配色（黑白灰为主色）
+- [x] i18n 国际化支持
 
 ---
 

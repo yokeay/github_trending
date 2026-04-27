@@ -65,14 +65,14 @@ src/
 ├── middleware.ts           # next-intl 中间件
 ```
 
-#### 数据库表（业务前缀: gth_）
+#### 数据库表（业务前缀: gth\_）
 
-| 表名 | 用途 |
-|------|------|
-| `gth_cache` | API 缓存（key / data / expires_at） |
-| `gth_bookmark` | 用户收藏项目 |
-| `gth_audit_log` | 操作审计日志 |
-| `gth_user_pref` | 用户偏好设置 |
+| 表名            | 用途                                |
+| --------------- | ----------------------------------- |
+| `gth_cache`     | API 缓存（key / data / expires_at） |
+| `gth_bookmark`  | 用户收藏项目                        |
+| `gth_audit_log` | 操作审计日志                        |
+| `gth_user_pref` | 用户偏好设置                        |
 
 ### 修复问题
 
@@ -104,3 +104,94 @@ src/
 
 - 旧依赖：express dotenv https
 - 新依赖：next-intl next-themes better-sqlite3 drizzle-orm lucide-react 等（见 package.json）
+
+---
+
+## v0.2.0 — API 层迁移
+
+**日期**: 2026-04-27
+**类型**: 小版本
+**负责人**: Claude
+
+### 变更内容
+
+#### 新增
+
+- `src/lib/github.ts` — GitHub API 封装
+  - `SIMPLE_CATEGORIES` / `MULTI_CATEGORIES` — 分类查询定义
+  - `searchRepos()` — 搜索仓库，支持单查询和多子查询分类
+  - `getRepoDetail()` — 单仓库详情
+  - `getRepoReadme()` — README 内容（base64 解码）
+  - `getRateLimitStatus()` — 限流状态
+  - `GitHubError` — 错误类，继承 Error
+
+- API Routes：
+  - `GET /api/categories` — 返回所有分类 `{key, label}`
+  - `GET /api/repos` — 搜索仓库，含参数校验/缓存/审计
+  - `GET /api/repo/[owner]/[repo]` — 单仓库详情+README
+  - `GET/POST/DELETE /api/bookmarks` — 收藏 CRUD
+  - `GET/PUT /api/user-pref` — 用户偏好 CRUD
+
+- `src/lib/cache.ts` — SQLite 缓存层
+  - `getCached()` / `setCache()` / `deleteCache()` / `clearExpiredCache()`
+  - 替代原内存 Map 缓存
+
+- `src/lib/api-client.ts` — 前端请求封装
+  - `ApiResponse<T>` / `ErrorCodes` / `ok()` / `err()` / `httpStatus()`
+  - `ApiError` 类（继承 Error）
+  - `apiFetch<T>()` — 自动处理统一响应格式
+
+- 审计日志写入 — 查询错误时记录到 `gth_audit_log` 表
+
+### 修复问题
+
+- `GitHubError` 类型定义改为 class，解决 `instanceof` 检查
+- `user-pref/route.ts` update 类型断言修复
+
+### 技术细节
+
+- 缓存 Key 前缀：`gth_repos:` / `gth_repo:` 等
+- 错误码：4xxx 客户端错误 / 5xxx 服务端错误
+- HTTP 状态码映射：错误码范围 → 4xx/5xx
+
+---
+
+## v0.3.0 — 前端组件重构
+
+**日期**: 2026-04-27
+**类型**: 小版本
+**负责人**: Claude
+
+### 变更内容
+
+#### 新增
+
+- `src/app/[locale]/RepoExplorer.tsx` — 仓库浏览器主组件
+  - 分类标签切换（CategoryPills）
+  - 搜索工具栏（搜索词 / 时间范围 / 每页条数）
+  - 仓库表格（RepoTable）含 Stars/Forks/Language/Topics
+  - 分页组件
+  - 限流信息显示
+  - Loading / Error 状态
+
+- Header 导航栏 — Logo + ThemeToggle
+- i18n 翻译完善 — toolbar.days / toolbar.perPage 等
+
+#### 修改
+
+- `src/app/[locale]/layout.tsx` — 添加 Header 组件
+- `src/middleware.ts` → `src/proxy.ts` — Next.js 16 重命名为 proxy
+
+### 修复问题
+
+- i18n 变量替换问题：移除占位符 `{count}` / `{days}`，使用纯文本
+- 重复页面文件清理（删除 `/app` 目录残留）
+- globals.css 位置修正（从 `/app` 移动到 `/src/app`）
+- middleware 重命名为 proxy.ts 避免 Next.js 16 警告
+
+### 技术细节
+
+- Client Component (`'use client'`) 用于交互式 UI
+- `useTranslations()` 用于运行时翻译
+- `apiFetch<T>()` 自动处理 API 响应格式
+- 缓存优先策略：先读缓存，命中则直接返回

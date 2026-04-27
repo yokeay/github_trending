@@ -9,8 +9,8 @@
   },
   "toolbar": {
     "searchPlaceholder": "Search project name or keyword...",
-    "days": "Last {days} days",
-    "perPage": "{count} per page",
+    "days": "Days",
+    "perPage": "Per page",
     "refresh": "Refresh"
   },
   "status": {

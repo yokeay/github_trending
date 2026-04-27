@@ -9,8 +9,8 @@
   },
   "toolbar": {
     "searchPlaceholder": "搜索项目名或关键字...",
-    "days": "最近 {days} 天",
-    "perPage": "每页 {count} 条",
+    "days": "最近几天",
+    "perPage": "每页",
     "refresh": "刷新"
   },
   "status": {
