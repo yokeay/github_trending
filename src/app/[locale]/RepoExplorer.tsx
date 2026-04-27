@@ -90,11 +90,6 @@ export default function RepoExplorer() {
     }
   }, [selectedCategory, page, perPage, days, search]);
 
-  // Use ref to track initial mount and avoid cascading renders
-  const isInitialFetch = useCallback(() => {
-    return true;
-  }, []);
-
   useEffect(() => {
     const timer = setTimeout(() => {
       fetchRepos();

@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { cn } from "@/lib/utils";
+import * as React from 'react';
+import { cn } from '@/lib/utils';
 
 interface DialogContextValue {
   open: boolean;
@@ -12,7 +12,7 @@ const DialogContext = React.createContext<DialogContextValue | null>(null);
 
 function useDialog() {
   const ctx = React.useContext(DialogContext);
-  if (!ctx) throw new Error("Dialog components must be used within Dialog");
+  if (!ctx) throw new Error('Dialog components must be used within Dialog');
   return ctx;
 }
 
@@ -35,11 +35,7 @@ function Dialog({ children, open: controlledOpen, onOpenChange }: DialogProps) {
     [isControlled, onOpenChange]
   );
 
-  return (
-    <DialogContext.Provider value={{ open, setOpen }}>
-      {children}
-    </DialogContext.Provider>
-  );
+  return <DialogContext.Provider value={{ open, setOpen }}>{children}</DialogContext.Provider>;
 }
 
 interface DialogTriggerProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -61,7 +57,7 @@ const DialogTrigger = React.forwardRef<HTMLButtonElement, DialogTriggerProps>(
     );
   }
 );
-DialogTrigger.displayName = "DialogTrigger";
+DialogTrigger.displayName = 'DialogTrigger';
 
 interface DialogPortalProps {
   children: React.ReactNode;
@@ -69,19 +65,21 @@ interface DialogPortalProps {
 
 const DialogPortal: React.FC<DialogPortalProps> = ({ children }) => {
   const { open, setOpen } = useDialog();
+
+  React.useEffect(() => {
+    if (!open) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [open, setOpen]);
+
   if (!open) return null;
 
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) setOpen(false);
   };
-
-  React.useEffect(() => {
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
-    };
-    document.addEventListener("keydown", onKeyDown);
-    return () => document.removeEventListener("keydown", onKeyDown);
-  }, [setOpen]);
 
   return (
     <div
@@ -104,23 +102,23 @@ const DialogContent = React.forwardRef<HTMLDivElement, DialogContentProps>(
       <div
         ref={ref}
         className={cn(
-          "relative w-full max-w-2xl bg-background border border-border rounded-xl shadow-lg animate-in fade-in-0 zoom-in-95 slide-in-from-2 slide-in-from-2",
+          'relative w-full max-w-2xl bg-background border border-border rounded-xl shadow-lg animate-in fade-in-0 zoom-in-95 slide-in-from-2 slide-in-from-2',
           className
         )}
-        onClick={(e) => e.stopPropagation()}
+        onClick={e => e.stopPropagation()}
       >
         {children}
       </div>
     </DialogPortal>
   )
 );
-DialogContent.displayName = "DialogContent";
+DialogContent.displayName = 'DialogContent';
 
 const DialogHeader: React.FC<{ className?: string; children: React.ReactNode }> = ({
   className,
   children,
 }) => (
-  <div className={cn("flex flex-col space-y-1.5 p-6 pb-4 border-b border-border", className)}>
+  <div className={cn('flex flex-col space-y-1.5 p-6 pb-4 border-b border-border', className)}>
     {children}
   </div>
 );
@@ -129,26 +127,19 @@ const DialogTitle: React.FC<React.HTMLAttributes<HTMLHeadingElement>> = ({
   className,
   ...props
 }) => (
-  <h2
-    className={cn("text-lg font-semibold leading-none tracking-tight", className)}
-    {...props}
-  />
+  <h2 className={cn('text-lg font-semibold leading-none tracking-tight', className)} {...props} />
 );
 
 const DialogDescription: React.FC<React.HTMLAttributes<HTMLParagraphElement>> = ({
   className,
   ...props
-}) => (
-  <p className={cn("text-sm text-muted-foreground", className)} {...props} />
-);
+}) => <p className={cn('text-sm text-muted-foreground', className)} {...props} />;
 
 const DialogFooter: React.FC<{ className?: string; children: React.ReactNode }> = ({
   className,
   children,
 }) => (
-  <div
-    className={cn("flex items-center justify-end gap-2 p-4 border-t border-border", className)}
-  >
+  <div className={cn('flex items-center justify-end gap-2 p-4 border-t border-border', className)}>
     {children}
   </div>
 );
@@ -168,7 +159,7 @@ const DialogClose: React.FC<
     </button>
   );
 };
-DialogClose.displayName = "DialogClose";
+DialogClose.displayName = 'DialogClose';
 
 export {
   Dialog,
