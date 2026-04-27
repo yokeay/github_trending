@@ -19,7 +19,10 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
-    "audit": "npm audit",
+    "db:init": "chmod +x scripts/init-db.sh && ./scripts/init-db.sh",
+    "backup": "chmod +x scripts/backup.sh && ./scripts/backup.sh",
+    "audit": "chmod +x scripts/audit.sh && ./scripts/audit.sh",
+    "ci": "chmod +x scripts/ci.sh && ./scripts/ci.sh",
     "prepare": "husky"
   },
   "dependencies": {

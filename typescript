@@ -1,37 +1,17 @@
-Script started on 2026-04-27 04:26:16+00:00 [COMMAND="npm run build 2>&1" <not executed on terminal>]
+Script started on 2026-04-27 04:29:47+00:00 [COMMAND="npm run test:run 2>&1" <not executed on terminal>]
 
-> github-trending-explorer@0.1.0 build
-> next build
+> github-trending-explorer@0.1.0 test:run
+> vitest run
 
-[1G[0K[1m[38;2;173;127;168m▲ Next.js 16.2.4[39m[22m (Turbopack)
-- Environments: .env.production, .env
-- Experiments (use with caution):
-  · optimizePackageImports
+[1G[0K[?25l[33mThe plugin "vite-tsconfig-paths" is detected. Vite now supports tsconfig paths resolution natively via the [1mresolve.tsconfigPaths[22m option. You can remove the plugin and set [1mresolve.tsconfigPaths: true[22m in your Vite config instead.[39m
 
-[37m[1m [22m[39m Creating an optimized production build ...
-[32m[1m✓[22m[39m Compiled successfully in 4.2s
-[?25l[37m[1m [22m[39m Running TypeScript  [36m.[39m[2K[1G[37m[1m [22m[39m Running TypeScript  [36m..[39m[2K[1G[37m[1m [22m[39m Running TypeScript  [36m...[39m[2K[1G[37m[1m [22m[39m Running TypeScript  [36m.[39m[2K[1G[37m[1m [22m[39m Running TypeScript  [36m..[39m[2K[1G[37m[1m [22m[39m Running TypeScript  [36m...[39m[2K[1G[37m[1m [22m[39m Running TypeScript  [36m.[39m[2K[1G[37m[1m [22m[39m Running TypeScript  [36m..[39m[2K[1G[37m[1m [22m[39m Running TypeScript  [36m...[39m[2K[1G[37m[1m [22m[39m Running TypeScript  [36m.[39m[2K[1G[37m[1m [22m[39m Running TypeScript  [36m..[39m[2K[1G[37m[1m [22m[39m Running TypeScript  [36m...[39m[2K[1G[37m[1m [22m[39m Running TypeScript  [36m.[39m[2K[1G[37m[1m [22m[39m Running TypeScript  [36m..[39m[2K[1G[37m[1m [22m[39m Running TypeScript  [36m...[39m[2K[1G[37m[1m [22m[39m Running TypeScript  [36m.[39m[2K[1G[37m[1m [22m[39m Running TypeScript  [36m..[39m[2K[1G[37m[1m [22m[39m Running TypeScript  [36m...[39m[2K[1G[37m[1m [22m[39m Running TypeScript  [36m.[39m[2K[1G[37m[1m [22m[39m Running TypeScript  [36m..[39m[2K[1G[37m[1m [22m[39m Running TypeScript  [36m...[39m[2K[1G[37m[1m [22m[39m Running TypeScript  [36m.[39m[2K[1G[?25h[?25l[37m[1m [22m[39m Finished TypeScript in 4.3s  [36m.[39m[2K[1G[?25h[37m[1m [22m[39m Finished TypeScript in 4.3s    [32m[1m✓[22m[39m Finished TypeScript in 4.3s 
-[?25l[37m[1m [22m[39m Collecting page data using 3 workers  [36m.[39m[2K[1G[37m[1m [22m[39m Collecting page data using 3 workers  [36m..[39m[2K[1G[37m[1m [22m[39m Collecting page data using 3 workers  [36m...[39m[2K[1G[?25h[37m[1m [22m[39m Collecting page data using 3 workers in 470ms    [32m[1m✓[22m[39m Collecting page data using 3 workers in 470ms 
-[?25l[37m[1m [22m[39m Generating static pages using 3 workers (0/4)  [36m[    ][39m[2K[1G[37m[1m [22m[39m Generating static pages using 3 workers (0/4)  [36m[=   ][39m[2K[1G[?25h[32m[1m✓[22m[39m Generating static pages using 3 workers (4/4) in 209ms
-[?25l[37m[1m [22m[39m Finalizing page optimization  [36m.[39m[2K[1G[?25h[37m[1m [22m[39m Finalizing page optimization in 12ms    [32m[1m✓[22m[39m Finalizing page optimization in 12ms 
-
-[4mRoute (app)[24m
-┌ ○ /_not-found
-├ ● /[locale]
-│ ├ /zh
-│ └ /en
-├ ƒ /[locale]/api/bookmarks
-├ ƒ /[locale]/api/categories
-├ ƒ /[locale]/api/repo/[owner]/[repo]
-├ ƒ /[locale]/api/repos
-└ ƒ /[locale]/api/user-pref
+ RUN  v4.1.5 /myproject/javascript/nextjs/github_trending
 
 
-ƒ Proxy (Middleware)
-
-○  (Static)   prerendered as static content
-●  (SSG)      prerendered as static HTML (uses [36mgenerateStaticParams[39m)
-ƒ  (Dynamic)  server-rendered on demand
+ Test Files  16 passed (16)
+      Tests  100 passed (100)
+   Start at  04:29:47
+   Duration  7.07s (transform 472ms, setup 0ms, import 2.65s, tests 812ms, environment 13.05s)
 
 [?25h[1G[0K⠙[1G[0K
-Script done on 2026-04-27 04:26:27+00:00 [COMMAND_EXIT_CODE="0"]
+Script done on 2026-04-27 04:29:54+00:00 [COMMAND_EXIT_CODE="0"]
