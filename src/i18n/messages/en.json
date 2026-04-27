@@ -1,0 +1,70 @@
+{
+  "app": {
+    "title": "GitHub Trending Explorer",
+    "subtitle": "Discover the fastest growing open source projects"
+  },
+  "header": {
+    "autoRefresh": "Auto Refresh",
+    "apiQuota": "API Quota"
+  },
+  "toolbar": {
+    "searchPlaceholder": "Search project name or keyword...",
+    "days": "Last {days} days",
+    "perPage": "{count} per page",
+    "refresh": "Refresh"
+  },
+  "status": {
+    "loading": "Loading...",
+    "total": "{count} projects found",
+    "updatedAt": "Updated at {time}",
+    "noResults": "No matching projects found",
+    "error": "Failed to load"
+  },
+  "table": {
+    "project": "Project",
+    "description": "Description",
+    "language": "Language",
+    "stars": "Stars",
+    "forks": "Forks",
+    "issues": "Issues",
+    "topics": "Topics",
+    "pushedAt": "Last Push"
+  },
+  "pagination": {
+    "prev": "‹ Prev",
+    "next": "Next ›"
+  },
+  "detail": {
+    "readme": "README",
+    "github": "GitHub",
+    "homepage": "Homepage",
+    "created": "Created",
+    "pushed": "Last Push",
+    "size": "Size",
+    "branch": "Branch"
+  },
+  "categories": {
+    "trending": "🔥 Trending",
+    "rust": "🦀 Rust",
+    "python": "🐍 Python",
+    "java": "☕ Java",
+    "vue": "💚 Vue",
+    "react": "⚛️ React",
+    "nestjs": "🐱 NestJS",
+    "cpp": "⚡ C++",
+    "fast-growing": "📈 Fast Growing",
+    "ai": "🤖 AI / ML",
+    "cicd": "🚀 CI/CD"
+  },
+  "time": {
+    "minutesAgo": "{n} minutes ago",
+    "hoursAgo": "{n} hours ago",
+    "daysAgo": "{n} days ago",
+    "monthsAgo": "{n} months ago"
+  },
+  "error": {
+    "network": "Network error",
+    "apiError": "API error",
+    "rateLimit": "Rate limit hit, please retry later"
+  }
+}
