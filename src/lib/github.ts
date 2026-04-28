@@ -148,8 +148,9 @@ export async function searchRepos(params: {
   per_page: number;
   days: number;
   search?: string;
+  language?: string | null;
 }): Promise<GitHubAPIResult<SearchResult>> {
-  const { category, page, per_page, days, search } = params;
+  const { category, page, per_page, days, search, language } = params;
   const sinceDate = new Date(Date.now() - days * 86400000).toISOString().split('T')[0];
   const searchSuffix = search ? ` ${search} in:name,description` : '';
 
@@ -159,7 +160,8 @@ export async function searchRepos(params: {
     const subPerPage = Math.ceil(per_page / multi.subQueries.length);
     const results = await Promise.allSettled(
       multi.subQueries.map(sq => {
-        const q = `${sq} pushed:>=${sinceDate}${searchSuffix}`;
+        const languageSuffix = language ? ` language:${language}` : '';
+        const q = `${sq} pushed:>=${sinceDate}${searchSuffix}${languageSuffix}`;
         return githubFetch<SearchResult>(
           `/search/repositories?q=${encodeURIComponent(q)}&sort=${multi.sort}&order=${multi.order}&page=${page}&per_page=${subPerPage}`
         );
@@ -197,9 +199,9 @@ export async function searchRepos(params: {
     SIMPLE_CATEGORIES[category as keyof typeof SIMPLE_CATEGORIES] || SIMPLE_CATEGORIES.trending;
   let q: string;
   if (category === 'fast-growing') {
-    q = `created:>=${sinceDate} stars:>10${searchSuffix}`;
+    q = `created:>=${sinceDate} stars:>10${searchSuffix}${language ? ` language:${language}` : ''}`;
   } else {
-    q = `${cat.q} pushed:>=${sinceDate}${searchSuffix}`;
+    q = `${cat.q} pushed:>=${sinceDate}${searchSuffix}${language ? ` language:${language}` : ''}`;
   }
 
   return githubFetch<SearchResult>(

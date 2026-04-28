@@ -20,6 +20,7 @@ export async function GET(req: NextRequest, context: RouteContext) {
   const per_page = Math.min(100, Math.max(1, Number(searchParams.get('per_page')) || 30));
   const days = Math.min(365, Math.max(1, Number(searchParams.get('days')) || 7));
   const search = searchParams.get('search') || '';
+  const language = searchParams.get('language') || null;
 
   // ── 参数校验 ──
   const validCategories = [...Object.keys(SIMPLE_CATEGORIES), ...Object.keys(MULTI_CATEGORIES)];
@@ -30,7 +31,7 @@ export async function GET(req: NextRequest, context: RouteContext) {
   }
 
   // ── 缓存检查 ──
-  const cacheKey = `gth_repos:${category}:${days}:${search}:${page}:${per_page}`;
+  const cacheKey = `gth_repos:${category}:${days}:${search}:${page}:${per_page}${language ? `:${language}` : ''}`;
   const cached = getCached(cacheKey);
   if (cached) {
     // 记录查询审计日志（仅在非缓存命中时）
@@ -38,7 +39,7 @@ export async function GET(req: NextRequest, context: RouteContext) {
   }
 
   try {
-    const result = await searchRepos({ category, page, per_page, days, search });
+    const result = await searchRepos({ category, page, per_page, days, search, language });
 
     const payload = {
       total_count: result.data.total_count,
